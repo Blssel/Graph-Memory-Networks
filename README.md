@@ -1,2 +1,2 @@
 # Graph-Memory-Networks
-An implementation Graph Memory Networks for Molecular Activity Prediction
+An implementation of Graph Memory Networks for Molecular Activity Prediction
