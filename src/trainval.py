@@ -51,7 +51,7 @@ def main():
   tf.logging.set_verbosity(tf.logging.INFO) #设置日志级别
 
   # -------------build the graph-------------#
-  controller = Controller()
+  controller = Controller(max_nodes)
   with tf.VariableScope("Query_input"):
     query = tf.one_hot([cfg.TASK_NUM - 1] * cfg.BATCH_SIZE, depth=cfg.TASK_NUM)[0]  # generate corresponding query,shape=[cfg.BATCH_SIZE,cfg.TASK_NUM]
     controller.queryInput(cfg, query)
