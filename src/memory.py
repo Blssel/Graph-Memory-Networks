@@ -3,21 +3,12 @@
 import numpy as np
 import tensorflow as tf
 from train import cfg
-
+'''
 class Cell:
-  '''
-  args:
-    feature: a tensor of shape(dim_m)
-    neighbors: a 2-dim list,each line stores the ids of a specific kind of neighbors
-  '''
   def __init__(self,feature,neighbors):
-    '''initialize an empty
-    :param feature:
-    :param neighbors:
-    '''
     self.feature = tf.constant(0,dtype=tf.float32,shape=[cfgs.SHAPE])
     self.neighbors=
-
+'''
 class GraphMemory:
   cells = [] #considering batch processing, the size should be:batch_size*cell_size
   '''Initialize an empty graph(or graph memory)
@@ -34,7 +25,6 @@ class GraphMemory:
     #Assign id for each node in order, then put them into corresponding memory cell.
     # instantiate a Cell and append to cells
   '''
-
 
 
 class Controller:
