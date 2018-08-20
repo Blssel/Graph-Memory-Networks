@@ -25,43 +25,44 @@ def main():
   with open(osp.join(cfg.INPUT.DATA_DIR,cfg.INPUT.INDEX),'r') as f:
     index = f.readlines()
 
-  # 原子数最多的分子共含146个原子,可认为最大为150个，故mem_size=150，167数据集共86个原子，故one-hot设为90维
+  # 原子数最多的分子共含146个原子,可认为最大为150个，故mem_size=150，167数据集共86个原子，故one-hot设为90维...单个分子，最大bond数为162
   suppl = Chem.SDMolSupplier(osp.join(cfg.INPUT.DATA_DIR,cfg.INPUT.SDF))
   for i in range(len(suppl)):
     m=suppl[i]
     if m is None: 
       continue
     # atom的one-hot编码,degree,H attached
+    bond_feature = [np.array([],dtype=np.float)]
+    for bond in m.GetBonds():
+      if bond.GetBondType()==rdkit.Chem.rdchem.BondType.SINGLE:
+        bond_feature.append(np.array([1.0,0.0,0.0,0.0],dtype=np.float))
+      elif bond.GetBondType()==rdkit.Chem.rdchem.BondType.DOUBLE:
+        bond_feature.append(np.array([0.0,1.0,0.0,0.0],dtype=np.float))
+      elif bond.GetBondType()==rdkit.Chem.rdchem.BondType.TRIPLE:
+        bond_feature.append(np.array([0.0,0.0,1.0,0.0],dtype=np.float))
+      else:
+        bond_feature.append(np.array([0.0,0.0,0.0,1.0],dtype=np.float))
+      # is bond in ring
+      if bond.IsInRing():
+        bond_feature.append(np.array([1.0,0.0],dtype=float))
+      else:
+        bond_feature.append(np.array([0.0,1.0],dtype=float))
+    bond_feature=np.concatenate(bond_feature)
     feature_mol=[]
     for atom in m.GetAtoms():
       feature_atom=[]
       one_hot = np.zeros(cfg.NETWORK.ONE_HOT_DIM,dtype=np.float)
       one_hot[atom.GetAtomicNum()]=1.0
       feature_atom.append(one_hot)
-      degree = np.array([x.GetAtomicNum() for x in atom.GetNeighbors()]) ######one-hot????
-      feature_atom.append(degree)
-    for bond in m.GetBonds():
-      # degree
-      bond_type=np.zeros(cfg.NETWORK.NUM_BOND_TYPE,np.float)
-      if bond.GetBondType()==rdkit.Chem.rdchem.BondType.SINGLE:
-        bond_type[0]=1.0
-      elif bond.GetBondType()==rdkit.Chem.rdchem.BondType.DOUBLE:
-        bond_type[1]=1.0
-      elif bond.GetBondType()==rdkit.Chem.rdchem.BondType.TRIPLE:
-        bond_type[2]=1.0
-      else:
-        bond_type[3]=1.0
-      feature_atom.append(bond_type)
-      # is bond in ring
-      if bond.IsInRing():
-        feature_atom.append(np.array([1.0],dtype=float))
-      else:
-        feature_atom.append(np.array([0.0],dtype=float))
-    # 整理feature_atom，并加入mem,
-    feature_atom = np.concatenate(feature_atom)
-    feature_mol.append(feature_atom) #此处未padding!!!!!!!!!!!
+      degree_onehot = np.zeros(cfg.NETWORK.MAX_NUM_DEGREE,dtype=np.float)
+      degree = len([x.GetAtomicNum() for x in atom.GetNeighbors()])
+      degree_onehot[degree-1] = 1.0
+      feature_atom.append(degree_onehot)
+      feature_atom.append(bond_feature)
+      # 整理feature_atom，并加入mem,
+      feature_atom = np.concatenate(feature_atom)
+      feature_mol.append(feature_atom) #此处未padding!!!!!!!!!!!
     feature_mol=np.array(feature_mol)
-   
     # 构建邻接矩阵 
     adj=np.zeros((cfg.NETWORK.NUM_BOND_TYPE,cfg.NETWORK.MEM_SIZE,cfg.NETWORK.MEM_SIZE),dtype=np.float)
     for ii in range(len(m.GetAtoms())):
