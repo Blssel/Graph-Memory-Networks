@@ -19,11 +19,11 @@ __C.SUMMARY_DIR = './log'
 
 #------关于输入的配置-------#
 __C.INPUT = edict()
-
-__C.INPUT.MODALITY= 'rgb'  # 可选
-__C.INPUT.NUM_SEGMENTS = 3
-__C.INPUT.NEW_LENGTH = 1  # 可变
-__C.INPUT.DATA_DIR = '/home/zy_17/tsn_violence'  #可通过调整此项在多个数据集上做实验
+__C.INPUT.QUERY_SIZE = 8
+__C.INPUT.DATA_DIR = '/home/blssel/workspace/Graph-Memory-Networks/data' 
+__C.INPUT.FEATURE = 'features/167'
+__C.INPUT.SDF = 'AID_167_database_all.sdf'
+__C.INPUT.INDEX = 'Index_AID_167_database_all.txt'
 
 #------Training配置-------#
 __C.TRAIN = edict()
@@ -48,7 +48,17 @@ __C.VALID.SPLIT_PATH = '/home/myn_17/BK - v1/testlist.txt'
 __C.VALID.BATCH_SIZE = 1
 __C.VALID.NUM_FRAMES = 64
 
-
+__C.NETWORK = edict()
+__C.NETWORK.STEPS = 10
+__C.NETWORK.DIM_A = 0#???
+__C.NETWORK.MEM_SIZE = 150#???
+__C.NETWORK.CELL_SIZE = 0#???
+__C.NETWORK.ALPH = 0#??????
+__C.NETWORK.BETA = 0#??????
+__C.NETWORK.CTRL_STATE_SIZE = 100 #???
+__C.NETWORK.BOND_SIZE = 10 #???
+__C.NETWORK.ONE_HOT_DIM = 90
+__C.NETWORK.NUM_BOND_TYPE = 4
 
 def get_output_dir(config_file_name):
     """Return the directory where experimental artifacts are placed.
