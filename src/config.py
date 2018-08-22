@@ -60,6 +60,7 @@ __C.NETWORK.BOND_SIZE = 10 #???
 __C.NETWORK.ONE_HOT_DIM = 90
 __C.NETWORK.NUM_BOND_TYPE = 4
 __C.NETWORK.MAX_NUM_DEGREE = 6
+__C.NETWORK.MAX_NUM_BOND = 162
 def get_output_dir(config_file_name):
     """Return the directory where experimental artifacts are placed.
     If the directory does not exist, it is created.
