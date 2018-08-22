@@ -1,5 +1,4 @@
 #coding:utf-8
-
 author__='zhiyu yin'
 
 import os
@@ -14,22 +13,24 @@ __C = edict()
 cfg = __C  # 引用传递
 
 __C.NUM_CLASSES = 30
-__C.GPUS = '0,1'  # 末尾无逗号
-__C.SUMMARY_DIR = './log'
+__C.GPUS = '1'  # 末尾无逗号
+__C.SUMMARY_DIR = '/data/yinzhiyu/results/Graph-Memory-Networks/log'
 
 #------关于输入的配置-------#
 __C.INPUT = edict()
 __C.INPUT.QUERY_SIZE = 8
-__C.INPUT.DATA_DIR = '/home/blssel/workspace/Graph-Memory-Networks/data' 
-__C.INPUT.FEATURE = 'features/167'
+__C.INPUT.DATA_DIR = '/data/yinzhiyu/datasets/167' 
+#__C.INPUT.FEATURE = 'features/167'
+__C.INPUT.INDEX_DIR = '/home/yzy/workspace/Graph-Memory-Networks/data' 
+__C.INPUT.TRAIN_INDEX = 'Index_AID_167_database_train.txt'
+__C.INPUT.TEST_INDEX = 'Index_AID_167_database_test.txt'
 __C.INPUT.SDF = 'AID_167_database_all.sdf'
 __C.INPUT.INDEX = 'Index_AID_167_database_all.txt'
 
 #------Training配置-------#
 __C.TRAIN = edict()
 
-__C.TRAIN.SPLIT_PATH = '/home/myn_17/BK - v1/trainlist.txt' # optional
-__C.TRAIN.BATCH_SIZE = 128
+__C.TRAIN.BATCH_SIZE = 1
 __C.TRAIN.NUM_FRAMES = 64
 __C.TRAIN.LEARNING_RATE_BASE = 0.001
 __C.TRAIN.DECAY_STEP = 1200
@@ -38,29 +39,28 @@ __C.TRAIN.DROPOUT_KEEP_PROB = 0.5
 __C.TRAIN.REGULARIZATION_SCALE = 0.0001 #??
 __C.TRAIN.MAX_ITE = 4000
 __C.TRAIN.MOMENTUM = 0.9
-__C.TRAIN.PRETRAINED_MODEL_NAME = './models/pretrained/inception_v2.ckpt'
-__C.TRAIN.SAVED_MODEL_PATTERN = './models/tsn_rgb_bk_v1.ckpt'
+__C.TRAIN.MAX_MODELS_TO_KEEP = 50
+__C.TRAIN.SAVED_MODEL_PATTERN = '/data/yinzhiyu/results/Graph-Memory-Networks/models'
 
 #------Valid配置-------#
 __C.VALID = edict()
 
-__C.VALID.SPLIT_PATH = '/home/myn_17/BK - v1/testlist.txt'
 __C.VALID.BATCH_SIZE = 1
 __C.VALID.NUM_FRAMES = 64
 
 __C.NETWORK = edict()
 __C.NETWORK.STEPS = 10
-__C.NETWORK.DIM_A = 0#???
-__C.NETWORK.MEM_SIZE = 150#???
-__C.NETWORK.CELL_SIZE = 0#???
-__C.NETWORK.ALPH = 0#??????
-__C.NETWORK.BETA = 0#??????
-__C.NETWORK.CTRL_STATE_SIZE = 100 #???
-__C.NETWORK.BOND_SIZE = 10 #???
+__C.NETWORK.DIM_A = 10#???
+__C.NETWORK.MEM_SIZE = 150
+#__C.NETWORK.CELL_SIZE = 1068 #162*(4+2)+(90+6)
+__C.NETWORK.CELL_SIZE = 96
+__C.NETWORK.ALPH = 0.5#??????
+__C.NETWORK.BETA = 0.5#??????
+__C.NETWORK.CTRL_STATE_SIZE = 50 #???
+__C.NETWORK.BOND_SIZE = 162 #
 __C.NETWORK.ONE_HOT_DIM = 90
 __C.NETWORK.NUM_BOND_TYPE = 4
 __C.NETWORK.MAX_NUM_DEGREE = 6
-__C.NETWORK.MAX_NUM_BOND = 162
 def get_output_dir(config_file_name):
     """Return the directory where experimental artifacts are placed.
     If the directory does not exist, it is created.

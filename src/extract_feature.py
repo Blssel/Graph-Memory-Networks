@@ -31,6 +31,7 @@ def main():
     m=suppl[i]
     if m is None: 
       continue
+    # atom的one-hot编码,degree,H attached
     bond_feature = [np.array([],dtype=np.float)]
     for bond in m.GetBonds():
       if bond.GetBondType()==rdkit.Chem.rdchem.BondType.SINGLE:
@@ -47,9 +48,6 @@ def main():
       else:
         bond_feature.append(np.array([0.0,1.0],dtype=float))
     bond_feature=np.concatenate(bond_feature)
-    bond_pad_len =  cfg.NETWORK.MAX_NUM_BOND*6 - bond_feature.shape[0]
-    bond_feature=np.lib.pad(bond_feature,((0,bond_pad_len)),'constant',constant_values=(0.0)) #padding
-    # atom的one-hot编码,degree,H attached
     feature_mol=[]
     for atom in m.GetAtoms():
       feature_atom=[]
@@ -63,13 +61,8 @@ def main():
       feature_atom.append(bond_feature)
       # 整理feature_atom，并加入mem,
       feature_atom = np.concatenate(feature_atom)
-      #atom_pad_len = 
-      #feature_atom = np.lib.pad(feature_atom,((0,atom_pad_len)),'constant',constant_values=(0.0))
-      # padding一下feature_atom
-      feature_mol.append(feature_atom) 
+      feature_mol.append(feature_atom) #此处未padding!!!!!!!!!!!
     feature_mol=np.array(feature_mol)
-    mol_pad_len = cfg.NETWORK.MEM_SIZE - feature_mol.shape[0]
-    feature_mol = np.lib.pad(feature_mol,((0,mol_pad_len),(0,0)),'constant',constant_values=(0.0,0.0))
     # 构建邻接矩阵 
     adj=np.zeros((cfg.NETWORK.NUM_BOND_TYPE,cfg.NETWORK.MEM_SIZE,cfg.NETWORK.MEM_SIZE),dtype=np.float)
     for ii in range(len(m.GetAtoms())):
